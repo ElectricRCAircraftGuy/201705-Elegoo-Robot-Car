@@ -21,6 +21,9 @@ Required Libraries:
 #include <NewPing.h>
 #include <eRCaGuy_GetMedian.h> //for finding median values 
 
+//Debug defines 
+#define SERIAL_PLOTTING_ON //comment out to turn serial plotting prints OFF
+
 //Ultrasonic range-finder "ping" sensor 
 const byte TRIGGER_PIN = A5;
 const byte ECHO_PIN = A4;
@@ -30,24 +33,6 @@ const unsigned int DESIRED_PING_PD = 39000; //us; this is the desired sample per
 #define UNK_DIST NO_ECHO //alias for NO_ECHO, meaning the sensor is too far away from the measured surface 
 
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE); //create NewPing object 
-
-//------------------------------------------------------------------------------
-//setup
-//------------------------------------------------------------------------------
-void setup()
-{
-  Serial.begin(115200);
-  Serial.println("\nBegin\n");
-}
-
-//------------------------------------------------------------------------------
-//loop
-//------------------------------------------------------------------------------
-void loop()
-{
-  getUltrasonicDistance();
-
-} //end of loop 
 
 //------------------------------------------------------------------------------
 //getUltrasonicDistance()
@@ -122,10 +107,12 @@ unsigned int getUltrasonicDistance()
     //Convert the us avg to mm distance 
     unsigned int dist_mm = microsecondsToMm(pingMedAvg);
     
+    #ifdef SERIAL_PLOTTING_ON
     //For Serial Plotting 
     Serial.print(microsecondsToMm(tPing)); Serial.print(", "); //mm; raw sample 
     Serial.print(microsecondsToMm(pingMedian)); Serial.print(", "); //mm; median sample 
     Serial.println(dist_mm); //mm; avg median sample 
+    #endif 
   }
   
   return dist_mm; //mm 
